@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package tcatalogue_serialize;
+
+import "graph.proto";
+
+message SettingRouter {
+	uint32 bus_velocity = 1;
+	uint32 bus_wait_time = 2;
+}
+
+message EdgeIdInfo {
+	uint64 key = 1;
+	string bus = 2;
+	uint32 stop_count = 3;
+}
+
+message TransportRouter {
+    SettingRouter setting = 1;
+	repeated EdgeIdInfo edge_id_to_bus = 2;
+	Graph graph = 3;
+	Router router = 4;
+}

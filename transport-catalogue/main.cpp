@@ -1,28 +1,32 @@
-#include <utility>
+#include "json_reader.h"
 
-#include "input_reader.h"
-#include "stat_reader.h"
-#include "transport_catalogue.h"
+#include <fstream>
+#include <iostream>
+#include <string_view>
 
-int main() {
-    catalogue::TransportCatalogue catalogue;
+using namespace std::literals;
 
-    {
-        input::Reader reader(catalogue);
-        const int input_request = ReadLineWithNumber();
-        for (size_t i = 0; i < input_request; ++i) {
-            reader.Load();
-        }
-        reader.GetCatalogue();
+void PrintUsage(std::ostream& stream = std::cerr) {
+    stream << "Usage: transport_catalogue [make_base|process_requests]\n"sv;
+}
+
+int main(int argc, char* argv[]) {
+    if (argc != 2) {
+        PrintUsage();
+        return 1;
     }
 
-    {
-        output::Reader reader(catalogue);
-        const int out_request = ReadLineWithNumber();
-        for (size_t i = 0; i < out_request; ++i) {
-            reader.Read();
-        }
-    }
+    const std::string_view mode(argv[1]);
 
-    return 0;
+    if (mode == "make_base"sv) {
+        renderer::MapRenderer renderer{};
+        reader::JsonReader read_ctlg{ std::cin, renderer, QueryType::MakeBase };
+    } else if (mode == "process_requests"sv) {
+        renderer::MapRenderer renderer{};
+        reader::JsonReader read_ctlg{ std::cin, renderer, QueryType::ProcessRequests };
+        read_ctlg.OutQuery(std::cout);
+    } else {
+        PrintUsage();
+        return 1;
+    }
 }

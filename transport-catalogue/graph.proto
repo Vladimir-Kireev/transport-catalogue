@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package tcatalogue_serialize;
+
+message Edge {
+    uint64 from = 1;
+    uint64 to = 2;
+    double weight =3;
+}
+
+message RepeatLists {
+	repeated uint64 lists = 1;
+}
+
+message Graph {
+	repeated Edge edges = 1;
+	repeated RepeatLists incidence_lists = 2;
+}
+
+
+message RouteInternalData {
+	bool is_no_data = 1;
+	double weight = 2;
+	oneof optional_prev_edge {
+		bool no_prev_edge = 3;
+		uint64 prev_edge = 4;
+	}
+}
+
+message RoutesInternalData {
+	repeated RouteInternalData datas = 1;
+}
+
+message Router {
+	repeated RoutesInternalData routes_internal_data = 1;
+}
